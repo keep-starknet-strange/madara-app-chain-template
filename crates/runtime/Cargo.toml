@@ -1,0 +1,119 @@
+[package]
+name = "app-chain-runtime"
+version.workspace = true
+edition.workspace = true
+description = "The runtime of your app chain that is built on top of Madara"
+authors = [
+  "Abdelhamid Bakhta <@abdelhamidbakhta>",
+  "Substrate DevHub <https://github.com/substrate-developer-hub>",
+]
+homepage = "https://github.com/keep-starknet-strange/madara"
+license = "MIT"
+publish = false
+repository = "https://github.com/keep-starknet-strange/madara"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+scale-codec = { package = "parity-scale-codec", workspace = true, features = [
+  "derive",
+] }
+scale-info = { workspace = true, features = ["derive"] }
+
+sp-api = { workspace = true }
+sp-block-builder = { workspace = true }
+sp-consensus-aura = { workspace = true }
+sp-inherents = { workspace = true }
+sp-offchain = { workspace = true }
+sp-session = { workspace = true }
+sp-transaction-pool = { workspace = true }
+sp-version = { workspace = true }
+
+frame-executive = { workspace = true }
+frame-support = { workspace = true }
+frame-system = { workspace = true }
+frame-try-runtime = { workspace = true, optional = true }
+pallet-aura = { workspace = true }
+pallet-grandpa = { workspace = true }
+pallet-timestamp = { workspace = true }
+sp-core = { workspace = true }
+sp-runtime = { workspace = true }
+sp-std = { workspace = true }
+
+# Used for the node RPCs
+frame-system-rpc-runtime-api = { workspace = true }
+
+# Used for runtime benchmarking
+frame-benchmarking = { workspace = true, optional = true }
+frame-system-benchmarking = { workspace = true, optional = true }
+
+# Madara Local Dependencies
+# Madara Pallets
+pallet-starknet = { workspace = true }
+# Madara Primitives
+mp-starknet = { workspace = true, default-features = false }
+# Starknet dependencies
+blockifier = { workspace = true, default-features = false }
+starknet-ff = { workspace = true, default-features = false }
+
+[build-dependencies]
+substrate-wasm-builder = { workspace = true }
+
+[features]
+std = [
+  # Madara pallets
+  "pallet-starknet/std",
+  # Frame dependencies
+  "frame-try-runtime?/std",
+  "frame-system-benchmarking?/std",
+  "frame-benchmarking?/std",
+  "frame-executive/std",
+  "frame-support/std",
+  "frame-system-rpc-runtime-api/std",
+  "frame-system/std",
+  "frame-try-runtime/std",
+  # Frame pallets dependencies
+  "pallet-aura/std",
+  "pallet-grandpa/std",
+  "pallet-timestamp/std",
+  # Substrate primitives dependencies
+  "sp-api/std",
+  "sp-block-builder/std",
+  "sp-consensus-aura/std",
+  "sp-core/std",
+  "sp-inherents/std",
+  "sp-offchain/std",
+  "sp-runtime/std",
+  "sp-session/std",
+  "sp-std/std",
+  "sp-transaction-pool/std",
+  "sp-version/std",
+  # 3rd party dependencies
+  "scale-codec/std",
+  "scale-info/std",
+]
+try-runtime = [
+  "pallet-timestamp/try-runtime",
+  "frame-try-runtime/try-runtime",
+  "frame-executive/try-runtime",
+  "frame-system/try-runtime",
+  "frame-support/try-runtime",
+  "pallet-aura/try-runtime",
+  "pallet-grandpa/try-runtime",
+  # Madara pallets
+  "pallet-starknet/try-runtime",
+]
+default = ["std"]
+madara-state-root = []
+runtime-benchmarks = [
+  "frame-benchmarking/runtime-benchmarks",
+  "frame-support/runtime-benchmarks",
+  "frame-system-benchmarking/runtime-benchmarks",
+  "frame-system/runtime-benchmarks",
+  "pallet-grandpa/runtime-benchmarks",
+  "pallet-timestamp/runtime-benchmarks",
+  "sp-runtime/runtime-benchmarks",
+  # Madara pallets
+  "pallet-starknet/runtime-benchmarks",
+]
