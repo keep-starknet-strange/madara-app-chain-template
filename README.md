@@ -1,0 +1,1 @@
+# madara-app-chain-template
