@@ -1,0 +1,106 @@
+[package]
+name = "app-chain-node"
+version.workspace = true
+edition.workspace = true
+description = "App chain node."
+authors = [
+  "Abdelhamid Bakhta <@keep-starknet-strange>",
+  "Substrate DevHub <https://github.com/substrate-developer-hub>",
+]
+homepage = "https://github.com/keep-starknet-strange/madara"
+license = "MIT"
+publish = false
+repository = "https://github.com/keep-starknet-strange/madara"
+build = "build.rs"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[[bin]]
+name = "app-chain-node"
+
+[dependencies]
+async-trait = "0.1"
+clap = { workspace = true, features = ["derive"] }
+futures = { workspace = true, features = ["thread-pool"] }
+log = { workspace = true }
+serde = { workspace = true }
+
+frame-system = { workspace = true }
+sc-cli = { workspace = true }
+sc-client-api = { workspace = true }
+sc-consensus = { workspace = true }
+sc-consensus-aura = { workspace = true }
+sc-consensus-grandpa = { workspace = true }
+sc-consensus-manual-seal = { workspace = true }
+sc-executor = { workspace = true }
+sc-keystore = { workspace = true }
+sc-network = { workspace = true }
+sc-network-sync = { workspace = true }
+sc-service = { workspace = true }
+sc-telemetry = { workspace = true }
+sc-transaction-pool-api = { workspace = true }
+sp-consensus-aura = { workspace = true }
+sp-consensus-grandpa = { workspace = true }
+sp-core = { workspace = true }
+sp-inherents = { workspace = true }
+sp-keyring = { workspace = true }
+sp-offchain = { workspace = true }
+sp-runtime = { workspace = true }
+sp-state-machine = { workspace = true }
+sp-timestamp = { workspace = true }
+sp-trie = { workspace = true, features = ["default"] }
+
+# These dependencies are used for the node template's RPCs
+jsonrpsee = { workspace = true, features = ["server"] }
+
+# Substrate primitives dependencies
+sp-api = { workspace = true }
+sp-block-builder = { workspace = true }
+sp-blockchain = { workspace = true }
+# Substrate client dependencies
+prometheus-endpoint = { package = "substrate-prometheus-endpoint", workspace = true }
+sc-rpc-api = { workspace = true }
+# Substrate frame dependencies
+# no substrate frame pallet dependencies for now
+
+# Substrate tools dependencies
+substrate-frame-rpc-system = { workspace = true }
+# These dependencies are used for runtime benchmarking
+frame-benchmarking = { workspace = true }
+frame-benchmarking-cli = { workspace = true }
+
+# Starknet
+blockifier = { workspace = true }
+hex = { workspace = true }
+app-chain-runtime = { workspace = true }
+mc-block-proposer = { workspace = true }
+mc-db = { workspace = true }
+mc-mapping-sync = { workspace = true }
+mc-rpc = { workspace = true }
+mc-storage = { workspace = true }
+mc-transaction-pool = { workspace = true }
+mp-digest-log = { workspace = true }
+mp-starknet = { workspace = true }
+pallet-starknet = { workspace = true }
+starknet-core = { workspace = true }
+
+# CLI-specific dependencies
+try-runtime-cli = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.43" }
+
+serde_json = { workspace = true }
+
+[build-dependencies]
+substrate-build-script-utils = { workspace = true }
+
+[features]
+default = []
+# Dependencies that are only required if runtime benchmarking should be build.
+runtime-benchmarks = [
+  "app-chain-runtime/runtime-benchmarks",
+  "frame-benchmarking/runtime-benchmarks",
+  "frame-benchmarking-cli/runtime-benchmarks",
+]
+# Enable features that allow the runtime to be tried and debugged. Name might be subject to change
+# in the near future.
+try-runtime = ["app-chain-runtime/try-runtime", "try-runtime-cli/try-runtime"]
