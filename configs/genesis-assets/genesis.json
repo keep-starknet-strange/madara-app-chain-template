@@ -15,32 +15,6 @@
       }
     ],
     [
-      "0x0424b7f61e3c5dfd74400d96fdea7e1f0bf2757f31df04387eaa957f095dd7b9",
-      { "path": "cairo-contracts/Proxy.json", "version": 0 }
-    ],
-    [
-      "0x2c2b8f559e1221468140ad7b2352b1a5be32660d0bf1a3ae3a054a4ec5254e4",
-      { "path": "genesis-assets/Account.json", "version": 0 }
-    ],
-    [
-      "0x5aa23d5bb71ddaa783da7ea79d405315bafa7cf0387a74f4593578c3e9e6570",
-      {
-        "path": "genesis-assets/AccountBaseImpl.json",
-        "version": 0
-      }
-    ],
-    [
-      "0x07db5c2c2676c2a5bfc892ee4f596b49514e3056a0eee8ad125870b4fb1dd909",
-      {
-        "path": "genesis-assets/CallAggregator.json",
-        "version": 0
-      }
-    ],
-    [
-      "0x3131fa018d520a037686ce3efddeab8f28895662f019ca3ca18a626650f7d1e",
-      { "path": "cairo-contracts/Proxy.json", "version": 0 }
-    ],
-    [
       "0x006280083f8c2a2db9f737320d5e3029b380e0e820fe24b8d312a6a34fdba0cd",
       {
         "path": "cairo-contracts/OpenzeppelinAccount.json",
@@ -54,7 +28,6 @@
         "version": 1
       }
     ],
-    ["0x1000", { "path": "cairo-contracts/test.json", "version": 0 }],
     ["0x10000", { "path": "cairo-contracts/ERC20.json", "version": 0 }],
     ["0x20000", { "path": "cairo-contracts/ERC20.json", "version": 0 }],
     ["0x80000", { "path": "cairo-contracts/ERC721.json", "version": 0 }],
@@ -83,7 +56,6 @@
       "0x4",
       "0x35ccefcf9d5656da623468e27e682271cd327af196785df99e7fee1436b6276"
     ],
-    ["0x1111", "0x1000"],
     [
       "0x040e59c2c182a58fb0a74349bfa4769cbbcba32547591dd3fb1def8623997d00",
       "0x10000"
