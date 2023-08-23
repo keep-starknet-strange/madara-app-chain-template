@@ -98,20 +98,20 @@ pallet-grandpa = { default-features = false, git = "https://github.com/paritytec
 pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.43" }
 
 # Madara pallets
-pallet-starknet = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984", default-features = false }
+pallet-starknet = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4", default-features = false }
 
 # Madara primtitives
-mp-starknet = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984", default-features = false }
-mp-digest-log = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984", default-features = false }
+mp-starknet = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4", default-features = false }
+mp-digest-log = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4", default-features = false }
 
 # Madara client
-mc-mapping-sync = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984" }
-mc-db = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984" }
-mc-storage = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984" }
-mc-rpc = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984" }
-mc-rpc-core = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984" }
-mc-block-proposer = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984" }
-mc-transaction-pool = { git = "https://github.com/keep-starknet-strange/madara", rev="98ef22350b9415a7e56b677ed60237a6c1361984" }
+mc-mapping-sync = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4" }
+mc-db = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4" }
+mc-storage = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4" }
+mc-rpc = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4" }
+mc-rpc-core = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4" }
+mc-block-proposer = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4" }
+mc-transaction-pool = { git = "https://github.com/keep-starknet-strange/madara", tag = "v0.1.0.experimental.4" }
 
 # App chain runtime
 app-chain-runtime = { path = "crates/runtime" }

@@ -5258,7 +5258,7 @@ dependencies = [
 [[package]]
 name = "mc-block-proposer"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "futures",
  "futures-timer",
@@ -5281,7 +5281,7 @@ dependencies = [
 [[package]]
 name = "mc-db"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "kvdb-rocksdb",
  "log",
@@ -5296,7 +5296,7 @@ dependencies = [
 [[package]]
 name = "mc-mapping-sync"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "futures",
  "futures-timer",
@@ -5317,7 +5317,7 @@ dependencies = [
 [[package]]
 name = "mc-rpc"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "blockifier",
  "frame-support 4.0.0-dev (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.43)",
@@ -5349,7 +5349,7 @@ dependencies = [
 [[package]]
 name = "mc-rpc-core"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "anyhow",
  "blockifier",
@@ -5379,7 +5379,7 @@ dependencies = [
 [[package]]
 name = "mc-storage"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "blockifier",
  "frame-support 4.0.0-dev (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.43)",
@@ -5400,7 +5400,7 @@ dependencies = [
 [[package]]
 name = "mc-transaction-pool"
 version = "4.0.0-dev"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "async-trait",
  "futures",
@@ -5584,7 +5584,7 @@ dependencies = [
 [[package]]
 name = "mp-digest-log"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "mp-starknet",
  "parity-scale-codec",
@@ -5594,7 +5594,7 @@ dependencies = [
 [[package]]
 name = "mp-starknet"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "async-trait",
  "bitvec",
@@ -6176,7 +6176,7 @@ dependencies = [
 [[package]]
 name = "pallet-starknet"
 version = "0.1.0"
-source = "git+https://github.com/keep-starknet-strange/madara?rev=98ef22350b9415a7e56b677ed60237a6c1361984#98ef22350b9415a7e56b677ed60237a6c1361984"
+source = "git+https://github.com/keep-starknet-strange/madara?tag=v0.1.0.experimental.4#98ef22350b9415a7e56b677ed60237a6c1361984"
 dependencies = [
  "blockifier",
  "frame-benchmarking 4.0.0-dev (git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.43)",
