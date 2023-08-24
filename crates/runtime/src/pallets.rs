@@ -37,7 +37,6 @@ impl pallet_starknet::Config for Runtime {
     type TimestampProvider = Timestamp;
     type UnsignedPriority = UnsignedPriority;
     type TransactionLongevity = TransactionLongevity;
-    type EnableStateRoot = ConstBool<true>;
     type DisableTransactionFee = ConstBool<false>;
     type DisableNonceValidation = ConstBool<false>;
     type InvokeTxMaxNSteps = InvokeTxMaxNSteps;

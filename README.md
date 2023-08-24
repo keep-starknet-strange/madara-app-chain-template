@@ -80,7 +80,6 @@ The app chain template gives you complete flexibility to modify exiting features
 
 Madara comes with only one pallet - `pallet_starknet`. This pallet allows app chains to execute Cairo contracts and have 100% RPC compatabiltiy with Starknet mainnet. This means all Cairo tooling should work out of the box with the app chain. At the same time, the pallet also allows the app chain to fine tune specific parameters to meet their own needs.
 
-- `EnableStateRoot`: If true, the state root will be commited at the end of each block
 - `DisableTransactionFee`: If true, calculate and store the Starknet state commitments
 - `DisableNonceValidation`: If true, check and increment nonce after a transaction
 - `InvokeTxMaxNSteps`: Maximum number of Cairo steps for an invoke transaction
