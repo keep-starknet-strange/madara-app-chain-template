@@ -28,7 +28,9 @@ jobs:
       matrix:
         platform:
           - linux/amd64
-          - linux/arm64
+          # Uncomment the below line to support arm64 builds. However, you would need a custom runner
+          # as the default runner takes more than 6 hours and Github cancel the job after 6 hours.
+          # - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v3
