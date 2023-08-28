@@ -1,13 +1,13 @@
 FROM rust:slim-buster as builder
 RUN apt-get -y update; \
-    apt-get install -y --no-install-recommends \
-        libssl-dev make clang-11 g++ llvm protobuf-compiler \
-        pkg-config libz-dev zstd git; \
-    apt-get autoremove -y; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*
+  apt-get install -y --no-install-recommends \
+  libssl-dev make clang-11 g++ llvm protobuf-compiler \
+  pkg-config libz-dev zstd git; \
+  apt-get autoremove -y; \
+  apt-get clean; \
+  rm -rf /var/lib/apt/lists/*
 
-WORKDIR /madara
+WORKDIR /app-chain
 COPY . .
 RUN cargo build --release -Z sparse-registry --config net.git-fetch-with-cli=true
 
@@ -18,22 +18,22 @@ LABEL description="Madara, a blazing fast Starknet sequencer" \
   documentation="https://docs.madara.zone/"
 
 # TODO: change the way chain-specs are copied on the node
-COPY --from=builder /madara/target/release/madara /madara-bin
+COPY --from=builder /app-chain/target/release/app-chain-node /app-chain-bin
 
 RUN apt-get -y update; \
-    apt-get install -y --no-install-recommends \
-        curl; \
-    apt-get autoremove -y; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*
+  apt-get install -y --no-install-recommends \
+  curl; \
+  apt-get autoremove -y; \
+  apt-get clean; \
+  rm -rf /var/lib/apt/lists/*
 
 HEALTHCHECK --interval=10s --timeout=30s --start-period=10s --retries=10 \
   CMD curl --request POST \
-    --header "Content-Type: application/json" \
-    --data '{"jsonrpc": "2.0","method": "starknet_chainId","id":1}' http://localhost:9944 || exit 1
+  --header "Content-Type: application/json" \
+  --data '{"jsonrpc": "2.0","method": "starknet_chainId","id":1}' http://localhost:9944 || exit 1
 
 # 9444 JSON-RPC server
 # 9615 Prometheus exporter
 # 30333 P2P communication
 EXPOSE 9944 9615 30333
-ENTRYPOINT ["/madara-bin"]
+ENTRYPOINT ["/app-chain-bin"]

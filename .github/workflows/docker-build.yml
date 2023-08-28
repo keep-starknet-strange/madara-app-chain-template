@@ -20,13 +20,17 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest-32-cores
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
     strategy:
       fail-fast: false
       matrix:
         platform:
           - linux/amd64
-          - linux/arm64
+          # Uncomment the below line to support arm64 builds. However, you would need a custom runner
+          # as the default runner takes more than 6 hours and Github cancel the job after 6 hours.
+          # - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -60,8 +64,7 @@ jobs:
           file: Dockerfile
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs:
-            type=image,name=${{ env.REGISTRY_IMAGE
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE
             }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
