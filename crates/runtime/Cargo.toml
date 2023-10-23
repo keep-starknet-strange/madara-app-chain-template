@@ -2,7 +2,7 @@
 name = "app-chain-runtime"
 version.workspace = true
 edition.workspace = true
-description = "The runtime of your app chain that is built on top of Madara"
+description = "Madara runtime."
 authors = [
   "Abdelhamid Bakhta <@abdelhamidbakhta>",
   "Substrate DevHub <https://github.com/substrate-developer-hub>",
@@ -16,10 +16,9 @@ repository = "https://github.com/keep-starknet-strange/madara"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-scale-codec = { package = "parity-scale-codec", workspace = true, features = [
-  "derive",
-] }
-scale-info = { workspace = true, features = ["derive"] }
+parity-scale-codec = { workspace = true, features = [] }
+scale-info = { workspace = true, features = [] }
+serde = { workspace = true }
 
 sp-api = { workspace = true }
 sp-block-builder = { workspace = true }
@@ -51,11 +50,16 @@ frame-system-benchmarking = { workspace = true, optional = true }
 # Madara Local Dependencies
 # Madara Pallets
 pallet-starknet = { workspace = true }
+
 # Madara Primitives
-mp-starknet = { workspace = true, default-features = false }
+mp-chain-id = { workspace = true }
+mp-felt = { workspace = true }
+mp-hashers = { workspace = true }
+mp-transactions = { workspace = true }
 # Starknet dependencies
-blockifier = { workspace = true, default-features = false }
-starknet-ff = { workspace = true, default-features = false }
+blockifier = { workspace = true }
+starknet-ff = { workspace = true }
+starknet_api = { workspace = true }
 
 [build-dependencies]
 substrate-wasm-builder = { workspace = true }
@@ -90,8 +94,10 @@ std = [
   "sp-transaction-pool/std",
   "sp-version/std",
   # 3rd party dependencies
-  "scale-codec/std",
+  "parity-scale-codec/std",
   "scale-info/std",
+  "blockifier/std",
+  "starknet_api/std",
 ]
 try-runtime = [
   "pallet-timestamp/try-runtime",
@@ -105,6 +111,8 @@ try-runtime = [
   "pallet-starknet/try-runtime",
 ]
 default = ["std"]
+madara-state-root = []
+disable-transaction-fee = []
 runtime-benchmarks = [
   "frame-benchmarking/runtime-benchmarks",
   "frame-support/runtime-benchmarks",

@@ -1,22 +1,30 @@
 //! Service and ServiceFactory implementation. Specialized wrapper over substrate service.
 
 use std::cell::RefCell;
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
 
-use app_chain_runtime::opaque::Block;
-use app_chain_runtime::{self, Hash, RuntimeApi};
 use futures::channel::mpsc;
 use futures::future;
+use futures::future::BoxFuture;
 use futures::prelude::*;
+use app_chain_runtime::opaque::Block;
+use app_chain_runtime::{self, Hash, RuntimeApi, SealingMode, StarknetHasher};
 use mc_block_proposer::ProposerFactory;
+use mc_data_availability::avail::config::AvailConfig;
+use mc_data_availability::avail::AvailClient;
+use mc_data_availability::celestia::config::CelestiaConfig;
+use mc_data_availability::celestia::CelestiaClient;
+use mc_data_availability::ethereum::config::EthereumConfig;
+use mc_data_availability::ethereum::EthereumClient;
+use mc_data_availability::{DaClient, DaLayer, DataAvailabilityWorker};
 use mc_mapping_sync::MappingSyncWorker;
 use mc_storage::overrides_handle;
 use mc_transaction_pool::FullPool;
-use mp_starknet::sequencer_address::{
+use mp_sequencer_address::{
     InherentDataProvider as SeqAddrInherentDataProvider, DEFAULT_SEQUENCER_ADDRESS, SEQ_ADDR_STORAGE_KEY,
 };
-use pallet_starknet::runtime_api::StarknetRuntimeApi;
 use prometheus_endpoint::Registry;
 use sc_client_api::{Backend, BlockBackend, BlockchainEvents, HeaderBackend};
 use sc_consensus::BasicQueue;
@@ -27,13 +35,12 @@ use sc_service::error::Error as ServiceError;
 use sc_service::{new_db_backend, Configuration, TaskManager, WarpSyncParams};
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker};
 use sp_api::offchain::OffchainStorage;
-use sp_api::{ConstructRuntimeApi, ProvideRuntimeApi, TransactionFor};
+use sp_api::{ConstructRuntimeApi, TransactionFor};
 use sp_consensus_aura::sr25519::AuthorityPair as AuraPair;
 use sp_offchain::STORAGE_PREFIX;
 use sp_runtime::traits::BlakeTwo256;
 use sp_trie::PrefixedMemoryDB;
 
-use crate::cli::Sealing;
 use crate::genesis_block::MadaraGenesisBlockBuilder;
 use crate::rpc::StarknetDeps;
 use crate::starknet::{db_config_dir, MadaraBackend};
@@ -68,6 +75,7 @@ type BoxBlockImport<Client> = sc_consensus::BoxBlockImport<Block, TransactionFor
 pub fn new_partial<BIQ>(
     config: &Configuration,
     build_import_queue: BIQ,
+    cache_more_things: bool,
 ) -> Result<
     sc_service::PartialComponents<
         FullClient,
@@ -156,7 +164,7 @@ where
         telemetry.as_ref().map(|x| x.handle()),
     )?;
 
-    let madara_backend = Arc::new(MadaraBackend::open(&config.database, &db_config_dir(config))?);
+    let madara_backend = Arc::new(MadaraBackend::open(&config.database, &db_config_dir(config), cache_more_things)?);
 
     let (import_queue, block_import) = build_import_queue(
         client.clone(),
@@ -244,9 +252,18 @@ where
 }
 
 /// Builds a new service for a full client.
-pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskManager, ServiceError> {
+///
+/// # Arguments
+///
+/// - `cache`: whether more information should be cached when storing the block in the database.
+pub fn new_full(
+    config: Configuration,
+    sealing: SealingMode,
+    da_layer: Option<(DaLayer, PathBuf)>,
+    cache_more_things: bool,
+) -> Result<TaskManager, ServiceError> {
     let build_import_queue =
-        if sealing.is_some() { build_manual_seal_import_queue } else { build_aura_grandpa_import_queue };
+        if sealing.is_default() { build_aura_grandpa_import_queue } else { build_manual_seal_import_queue };
 
     let sc_service::PartialComponents {
         client,
@@ -257,7 +274,7 @@ pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskM
         select_chain,
         transaction_pool,
         other: (block_import, grandpa_link, mut telemetry, madara_backend),
-    } = new_partial(&config, build_import_queue)?;
+    } = new_partial(&config, build_import_queue, cache_more_things)?;
 
     let mut net_config = sc_network::config::FullNetworkConfiguration::new(&config.network);
 
@@ -266,9 +283,7 @@ pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskM
         &config.chain_spec,
     );
 
-    let warp_sync_params = if sealing.is_some() {
-        None
-    } else {
+    let warp_sync_params = if sealing.is_default() {
         net_config
             .add_notification_protocol(sc_consensus_grandpa::grandpa_peers_set_config(grandpa_protocol_name.clone()));
         let warp_sync = Arc::new(sc_consensus_grandpa::warp_proof::NetworkProvider::new(
@@ -277,6 +292,8 @@ pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskM
             Vec::default(),
         ));
         Some(WarpSyncParams::WithProvider(warp_sync))
+    } else {
+        None
     };
 
     let (network, system_rpc_tx, tx_handler_controller, network_starter, sync_service) =
@@ -299,14 +316,18 @@ pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskM
     let force_authoring = config.force_authoring;
     let backoff_authoring_blocks: Option<()> = None;
     let name = config.network.node_name.clone();
-    let enable_grandpa = !config.disable_grandpa && sealing.is_none();
+    let enable_grandpa = !config.disable_grandpa && sealing.is_default();
     let prometheus_registry = config.prometheus_registry().cloned();
     let starting_block = client.info().best_number;
 
     // Channel for the rpc handler to communicate with the authorship task.
-    // TODO: commands_stream is is currently unused, but should be used to implement the `sealing`
-    // parameter
-    let (command_sink, commands_stream) = mpsc::channel(1000);
+    let (command_sink, commands_stream) = match sealing {
+        SealingMode::Manual => {
+            let (sender, receiver) = mpsc::channel(1000);
+            (Some(sender), Some(receiver))
+        }
+        _ => (None, None),
+    };
 
     let overrides = overrides_handle(client.clone());
     let starknet_rpc_params = StarknetDeps {
@@ -329,7 +350,7 @@ pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskM
                 graph: graph.clone(),
                 deny_unsafe,
                 starknet: starknet_rpc_params.clone(),
-                command_sink: if sealing.is_some() { Some(command_sink.clone()) } else { None },
+                command_sink: command_sink.clone(),
             };
             crate::rpc::create_full(deps).map_err(Into::into)
         })
@@ -350,28 +371,55 @@ pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskM
         telemetry: telemetry.as_mut(),
     })?;
 
-    let hasher =
-        client.runtime_api().get_hasher(client.info().best_hash).map_err(|e| ServiceError::Client(e.into()))?.into();
-
     task_manager.spawn_essential_handle().spawn(
         "mc-mapping-sync-worker",
         Some("madara"),
-        MappingSyncWorker::new(
+        MappingSyncWorker::<_, _, _, StarknetHasher>::new(
             client.import_notification_stream(),
             Duration::new(6, 0),
             client.clone(),
             backend.clone(),
-            madara_backend,
+            madara_backend.clone(),
             3,
             0,
-            hasher,
         )
         .for_each(|()| future::ready(())),
     );
 
+    // initialize data availability worker
+    if let Some((da_layer, da_path)) = da_layer {
+        let da_client: Box<dyn DaClient + Send + Sync> = match da_layer {
+            DaLayer::Celestia => {
+                let celestia_conf = CelestiaConfig::try_from(&da_path)?;
+                Box::new(CelestiaClient::try_from(celestia_conf).map_err(|e| ServiceError::Other(e.to_string()))?)
+            }
+            DaLayer::Ethereum => {
+                let ethereum_conf = EthereumConfig::try_from(&da_path)?;
+                Box::new(EthereumClient::try_from(ethereum_conf)?)
+            }
+            DaLayer::Avail => {
+                let avail_conf = AvailConfig::try_from(&da_path)?;
+                Box::new(AvailClient::try_from(avail_conf).map_err(|e| ServiceError::Other(e.to_string()))?)
+            }
+        };
+
+        task_manager.spawn_essential_handle().spawn(
+            "da-worker-prove",
+            Some("madara"),
+            DataAvailabilityWorker::prove_current_block(da_client.get_mode(), client.clone(), madara_backend.clone()),
+        );
+        task_manager.spawn_essential_handle().spawn(
+            "da-worker-update",
+            Some("madara"),
+            DataAvailabilityWorker::update_state(da_client, client.clone(), madara_backend),
+        );
+    };
+
     if role.is_authority() {
         // manual-seal authorship
-        if let Some(sealing) = sealing {
+        if !sealing.is_default() {
+            log::info!("{} sealing enabled.", sealing);
+
             run_manual_seal_authorship(
                 sealing,
                 client,
@@ -385,7 +433,6 @@ pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskM
 
             network_starter.start_network();
 
-            log::info!("Manual Seal Ready");
             return Ok(task_manager);
         }
 
@@ -495,14 +542,14 @@ pub fn new_full(config: Configuration, sealing: Option<Sealing>) -> Result<TaskM
 
 #[allow(clippy::too_many_arguments)]
 fn run_manual_seal_authorship(
-    sealing: Sealing,
+    sealing: SealingMode,
     client: Arc<FullClient>,
     transaction_pool: Arc<FullPool<Block, FullClient>>,
     select_chain: FullSelectChain,
     block_import: BoxBlockImport<FullClient>,
     task_manager: &TaskManager,
     prometheus_registry: Option<&Registry>,
-    commands_stream: mpsc::Receiver<sc_consensus_manual_seal::rpc::EngineCommand<Hash>>,
+    commands_stream: Option<mpsc::Receiver<sc_consensus_manual_seal::rpc::EngineCommand<Hash>>>,
 ) -> Result<(), ServiceError>
 where
     RuntimeApi: ConstructRuntimeApi<Block, FullClient>,
@@ -548,21 +595,21 @@ where
         Ok(timestamp)
     };
 
-    let manual_seal = match sealing {
-        Sealing::Manual => future::Either::Left(sc_consensus_manual_seal::run_manual_seal(
-            sc_consensus_manual_seal::ManualSealParams {
+    let manual_seal: BoxFuture<_> = match sealing {
+        SealingMode::Manual => {
+            Box::pin(sc_consensus_manual_seal::run_manual_seal(sc_consensus_manual_seal::ManualSealParams {
                 block_import,
                 env: proposer_factory,
                 client,
                 pool: transaction_pool,
-                commands_stream,
+                commands_stream: commands_stream.expect("Manual sealing requires a channel from RPC."),
                 select_chain,
                 consensus_data_provider: None,
                 create_inherent_data_providers,
-            },
-        )),
-        Sealing::Instant => future::Either::Right(sc_consensus_manual_seal::run_instant_seal(
-            sc_consensus_manual_seal::InstantSealParams {
+            }))
+        }
+        SealingMode::Instant { finalize } => {
+            let instant_seal_params = sc_consensus_manual_seal::InstantSealParams {
                 block_import,
                 env: proposer_factory,
                 client,
@@ -570,8 +617,14 @@ where
                 select_chain,
                 consensus_data_provider: None,
                 create_inherent_data_providers,
-            },
-        )),
+            };
+            if finalize {
+                Box::pin(sc_consensus_manual_seal::run_instant_seal_and_finalize(instant_seal_params))
+            } else {
+                Box::pin(sc_consensus_manual_seal::run_instant_seal(instant_seal_params))
+            }
+        }
+        _ => unreachable!("Other sealing modes are not expected in manual-seal."),
     };
 
     // we spawn the future on a background thread managed by service.
@@ -590,9 +643,9 @@ type ChainOpsResult = Result<
     ServiceError,
 >;
 
-pub fn new_chain_ops(mut config: &mut Configuration) -> ChainOpsResult {
+pub fn new_chain_ops(config: &mut Configuration, cache_more_things: bool) -> ChainOpsResult {
     config.keystore = sc_service::config::KeystoreConfig::InMemory;
     let sc_service::PartialComponents { client, backend, import_queue, task_manager, other, .. } =
-        new_partial::<_>(config, build_aura_grandpa_import_queue)?;
+        new_partial::<_>(config, build_aura_grandpa_import_queue, cache_more_things)?;
     Ok((client, backend, import_queue, task_manager, other.3))
 }
