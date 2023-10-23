@@ -34,26 +34,40 @@ cargo +nightly doc --open
 
 ### Single-Node Development Chain
 
+Set up the chain with the genesis config. More about defining the genesis state is mentioned below.
+
+```sh
+./target/release/app-chain-node setup --chain dev --from-local ./configs
+```
+
 The following command starts a single-node development chain.
 
 ```sh
 ./target/release/app-chain-node --dev
 ```
 
-Please note, Madara overrides the default `dev` flag in substrate to meet it's requirements. The following flags are automatically enabled with the `--dev` argument:
+You can specify the folder where you want to store the genesis state as follows
 
-`--alice`, `--rpc_external`,`--rpc-methods=unsafe`,`--force-authoring`
+```sh
+./target/release/app-chain-node setup --chain dev --from-local ./configs --base-path=<path>
+```
 
-To store the chain state in a specific folder, use the following command
+If you used a custom folder to store the genesis state, you need to specify it when running
+
+```sh
+./target/release/app-chain-node --base-path=<path>
+```
+
+Please note, Madara overrides the default `dev` flag in substrate to meet its requirements. The following flags are automatically enabled with the `--dev` argument:
+
+`--chain=dev`, `--force-authoring`, `--alice`, `--tmp`, `--rpc-external`, `--rpc-methods=unsafe`
+
+To store the chain state in the same folder as the genesis state, run the following command. You cannot combine the `base-path` command
+with `--dev` as `--dev` enforces `--tmp` which will store the db at a temporary folder. You can, however, manually specify all flags that
+the dev flag adds automatically. Keep in mind, the path must be the same as the one you used in the setup command.
 
 ```sh
 ./target/release/app-chain-node --base-path <path>
-```
-
-To start the development chain from a new fresh state you can either delete the data from the `base-path` or start from a new fresh database on each start using the following command
-
-```sh
-./target/release/app-chain-node --dev --tmp
 ```
 
 To start the development chain with detailed logging, run the following command:

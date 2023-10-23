@@ -2,7 +2,7 @@
 name = "app-chain-node"
 version.workspace = true
 edition.workspace = true
-description = "App chain node."
+description = "Madara node."
 authors = [
   "Abdelhamid Bakhta <@keep-starknet-strange>",
   "Substrate DevHub <https://github.com/substrate-developer-hub>",
@@ -24,6 +24,7 @@ async-trait = "0.1"
 clap = { workspace = true, features = ["derive"] }
 futures = { workspace = true, features = ["thread-pool"] }
 log = { workspace = true }
+md5 = { workspace = true }
 serde = { workspace = true }
 
 frame-system = { workspace = true }
@@ -59,7 +60,7 @@ sp-api = { workspace = true }
 sp-block-builder = { workspace = true }
 sp-blockchain = { workspace = true }
 # Substrate client dependencies
-prometheus-endpoint = { package = "substrate-prometheus-endpoint", workspace = true }
+prometheus-endpoint = { workspace = true }
 sc-rpc-api = { workspace = true }
 # Substrate frame dependencies
 # no substrate frame pallet dependencies for now
@@ -75,20 +76,27 @@ blockifier = { workspace = true }
 hex = { workspace = true }
 app-chain-runtime = { workspace = true }
 mc-block-proposer = { workspace = true }
+mc-data-availability = { workspace = true }
 mc-db = { workspace = true }
 mc-mapping-sync = { workspace = true }
 mc-rpc = { workspace = true }
 mc-storage = { workspace = true }
 mc-transaction-pool = { workspace = true }
-mp-digest-log = { workspace = true }
-mp-starknet = { workspace = true }
 pallet-starknet = { workspace = true }
 starknet-core = { workspace = true }
+
+# Primitives
+mp-block = { workspace = true }
+mp-digest-log = { workspace = true }
+mp-felt = { workspace = true }
+mp-sequencer-address = { workspace = true, features = ["client"] }
 
 # CLI-specific dependencies
 try-runtime-cli = { optional = true, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.43" }
 
+reqwest = { workspace = true }
 serde_json = { workspace = true }
+url = { workspace = true }
 
 [build-dependencies]
 substrate-build-script-utils = { workspace = true }
@@ -104,3 +112,7 @@ runtime-benchmarks = [
 # Enable features that allow the runtime to be tried and debugged. Name might be subject to change
 # in the near future.
 try-runtime = ["app-chain-runtime/try-runtime", "try-runtime-cli/try-runtime"]
+disable-transaction-fee = ["app-chain-runtime/disable-transaction-fee"]
+# Load sharingan chain-specs during the compilation
+# This is the way to run a sharingan chain
+sharingan = []
