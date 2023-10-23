@@ -37,13 +37,7 @@ cargo +nightly doc --open
 Set up the chain with the genesis config. More about defining the genesis state is mentioned below.
 
 ```sh
-./target/debug/app-chain-node setup --chain dev --from-local ./configs
-```
-
-You can specify the folder where you want to store the genesis state as follows
-
-```sh
-./target/debug/app-chain-node setup --chain dev --from-local ./configs --base-path=<path>
+./target/release/app-chain-node setup --chain dev --from-local ./configs
 ```
 
 The following command starts a single-node development chain.
@@ -52,7 +46,13 @@ The following command starts a single-node development chain.
 ./target/release/app-chain-node --dev
 ```
 
-If you used a custom folder to store the genesis state, you need to specify it here
+You can specify the folder where you want to store the genesis state as follows
+
+```sh
+./target/release/app-chain-node setup --chain dev --from-local ./configs --base-path=<path>
+```
+
+If you used a custom folder to store the genesis state, you need to specify it when running
 
 ```sh
 ./target/release/app-chain-node --base-path=<path>
