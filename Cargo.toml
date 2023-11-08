@@ -98,26 +98,26 @@ pallet-grandpa = { default-features = false, git = "https://github.com/paritytec
 pallet-timestamp = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.43" }
 
 # Madara pallets
-pallet-starknet = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0", default-features = false }
+pallet-starknet = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20", default-features = false }
 
 # Madara primtitives
-mp-digest-log = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0", default-features = false }
-mp-block = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0", default-features = false }
-mp-felt = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0", default-features = false }
-mp-sequencer-address = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0", default-features = false }
-mp-chain-id = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0", default-features = false }
-mp-hashers = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0", default-features = false }
-mp-transactions = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0", default-features = false }
+mp-digest-log = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20", default-features = false }
+mp-block = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20", default-features = false }
+mp-felt = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20", default-features = false }
+mp-sequencer-address = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20", default-features = false }
+mp-chain-id = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20", default-features = false }
+mp-hashers = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20", default-features = false }
+mp-transactions = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20", default-features = false }
 
 # Madara client
-mc-mapping-sync = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0" }
-mc-db = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0" }
-mc-storage = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0" }
-mc-rpc = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0" }
-mc-rpc-core = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0" }
-mc-block-proposer = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0" }
-mc-transaction-pool = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0" }
-mc-data-availability = { git = "https://github.com/keep-starknet-strange/madara", rev = "5c6279c85a8802041473dd2d5ef5373b8d5fffc0" }
+mc-mapping-sync = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20" }
+mc-db = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20" }
+mc-storage = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20" }
+mc-rpc = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20" }
+mc-rpc-core = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20" }
+mc-block-proposer = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20" }
+mc-transaction-pool = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20" }
+mc-data-availability = { git = "https://github.com/keep-starknet-strange/madara", rev = "e1493f0b2bbbb08c271b4c83040bd01695bf3d20" }
 
 # App chain runtime
 app-chain-runtime = { path = "crates/runtime" }
